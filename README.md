@@ -1,15 +1,15 @@
-# Multi-Pattern FileFind (mff)
+# Multi-Pattern FileFind (ffx)
 
 This is a multi-pattern file-find utility written in Scala.
 
 ## Usage
 
-Run `mff` by itself to see the usage information:
+Run `ffx` by itself to see the usage information:
 
 ````
-$ mff
+$ ffx
 
-Usage: mff [options]
+Usage: ffx [options]
 
   -d, --dir [dirName]      required; the directory to search
   -f, --filename-pattern [filenamePattern]
@@ -25,7 +25,7 @@ Usage: mff [options]
 Here’s an example command:
 
 ````
-mff -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile -b 1 -a 2
+ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile -b 1 -a 2
 ````
 
 It means:
@@ -62,7 +62,7 @@ When that output is shown in a terminal window, all occurrences of `ListView` an
 Here’s a command using the “or” option, which means, “Match *any* pattern, not *all* patterns (which is the default)”:
 
 ````
-mff -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 Dismissible -o
+ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 Dismissible -o
 ````
 
 Its “or” output looks like this, matching all files that contain `ListView` or `Dismissible`:
@@ -78,25 +78,32 @@ Its “or” output looks like this, matching all files that contain `ListView` 
 ````
 
 
-
-
-## Building the app (TODO: UPDATE THIS SECTION)
+## Building the app
 
 I initially build the app with [sbt-assembly](https://github.com/sbt/sbt-assembly), then create an executable with GraalVM. The steps are:
 
 - Run `sbt assembly`, or run `assembly` from the SBT prompt
-- That creates a JAR file named *target/scala-2.12/FileFind-assembly-0.1.jar*
+- That creates a JAR file named *target/scala-2.12/MultiPatternFileFind-assembly-0.1.jar*
 - `cd` into the *Graal* directory
 - Source the first file, i.e., `. 1setup_graal` (you’ll need to change that configuration for your system)
-- Then run `2compile_graal.sh` to create the `ff` executable with GraalVM
+- Then run `2compile_graal.sh` to create the `ffx` executable with GraalVM
 
-After that, copy the `ff` executable to your *~/bin* directory, or somewhere similar.
+After that, copy the `ffx` executable to your *~/bin* directory, or somewhere similar.
 
 
 
-## More information (TODO: UPDATE THIS SECTION)
+## TO-DO
 
-For more information, see my [Scala “file find” command blog post](https://alvinalexander.com/scala/scala-file-find-utility-command).
+- The code is inefficient in that it opens and searches files multiple times.
+  It would be better to open the file once, convert it to a `Seq[String]`, then
+  search that `Seq` instead of the file.
+- Add “Help” text, including usage examples
+
+
+
+## More information
+
+- TODO
 
 Alvin Alexander  
 https://alvinalexander.com

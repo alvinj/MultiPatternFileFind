@@ -2,7 +2,7 @@
 # this script assumes that this file was already created
 # with `sbt package` or `sbt assembly`
 JAR_FILE=MultiPatternFileFind-assembly-0.1.jar
-COMMAND_NAME=mff
+COMMAND_NAME=ffx
 
 echo "copying JAR file to current dir ..."
 cp ../target/scala-2.12/${JAR_FILE} .

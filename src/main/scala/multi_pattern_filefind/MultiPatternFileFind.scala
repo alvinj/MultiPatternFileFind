@@ -17,6 +17,7 @@ object MultiPatternFileFind extends App {
         searchPattern1: String = "",    //1st pattern to look for inside files
         searchPattern2: String = "",    //2nd pattern to look for inside files
         searchPattern3: String = "",    //3rd pattern to look for inside files
+        searchPattern4: String = "",    //4th pattern to look for inside files
         filenamePattern: String = "",   //filename pattern to search for
         before: Int = 0,                //lines to print before each match
         after: Int = 0,                 //lines to print after each match
@@ -29,8 +30,8 @@ object MultiPatternFileFind extends App {
     val parser1: OParser[Unit,Config] = {
       import builder._
       OParser.sequence(
-        programName("mff"),
-        head("mff", "0.1"),
+        programName("ffx"),
+        head("ffx", "0.1"),
         opt[String]('d', "d")
             .required()
             .valueName("[dirName]")
@@ -54,6 +55,10 @@ object MultiPatternFileFind extends App {
         opt[String]("p3")
             .valueName("[searchPattern]")
             .action((x, c) => c.copy(searchPattern3 = x))
+            .text("optional"),
+        opt[String]("p4")
+            .valueName("[searchPattern]")
+            .action((x, c) => c.copy(searchPattern4 = x))
             .text("optional"),
         opt[Int]('b', "before")
             .valueName("[before]")
@@ -84,6 +89,7 @@ object MultiPatternFileFind extends App {
             config.searchPattern2
         )
         if (config.searchPattern3.trim != "") searchPatterns += config.searchPattern3
+        if (config.searchPattern4.trim != "") searchPatterns += config.searchPattern4
 
         val finder = new Finder(
             config.filenamePattern, 

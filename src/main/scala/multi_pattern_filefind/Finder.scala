@@ -36,6 +36,7 @@ extends SimpleFileVisitor[Path] {
             // search the file for the patterns
             val fileContents = FileUtils.fileToString(canonFilename)
             if (matchAnyPattern) {
+                // the optional use case -- the file can contain any pattern
                 doTheWork(canonFilename, searchPatterns, before, after)
             } else {
                 // the main use case -- the file must contain all patterns
