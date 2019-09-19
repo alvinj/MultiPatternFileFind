@@ -31,12 +31,12 @@ object MultiPatternFileFind extends App {
       OParser.sequence(
         programName("mff"),
         head("mff", "0.1"),
-        opt[String]('d', "dir")
+        opt[String]('d', "d")
             .required()
             .valueName("[dirName]")
             .action((x, c) => c.copy(searchDir = x))
             .text("required; the directory to search"),
-        opt[String]('f', "filename-pattern")
+        opt[String]('f', "f")
             .required()
             .valueName("[filenamePattern]")
             .action((x, c) => c.copy(filenamePattern = x))
