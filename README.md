@@ -9,6 +9,7 @@ Run `mff` by itself to see the usage information:
 ````
 $ mff
 
+mff 0.1
 Usage: mff [options]
 
   -d, --dir <value>        required; the directory to search
@@ -22,6 +23,7 @@ Usage: mff [options]
                            regex patterns must match the full line
   -b, --before [before] (the number of lines BEFORE the search pattern to print, like 1 or 2)
   -a, --after [after]   (the number of lines AFTER the search pattern to print, like 1 or 2)
+  -o, --or                 use ‘or’ approach to match *any* pattern instead of *all* patterns
 ````
 
 Here’s an example command:
@@ -41,8 +43,45 @@ It means:
 Sample output looks like this:
 
 ````
-TODO
+/Users/al/Projects/Flutter/PracticalFlutterBook/ch_05+06/flutter_book/lib/notes/NotesList.dart
+----------------------------------------------------------------------------------------------
+  36:             ),
+  37:             body : ListView.builder(
+  38:               itemCount : notesModel.entityList.length,
+  39:               itemBuilder : (BuildContext inBuildContext, int inIndex) {
+
+  66:                       color : color,
+  67:                       child : ListTile(
+  68:                         title : Text("${note.title}"),
+  69:                         subtitle : Text("${note.content}"),
+
+  81:               } /* End itemBuilder. */
+  82:             ) /* End End ListView.builder. */
+  83:           ); /* End Scaffold. */
+  84:         } /* End ScopedModelDescendant builder. */
 ````
+
+When that output is shown in a terminal window, all occurrences of `ListView` and `ListTile` are underlined.
+
+Here’s a command using the “or” option, which means, “Match *any* pattern, not *all* patterns (which is the default)”:
+
+````
+mff -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 Dismissible -o
+````
+
+Its “or” output looks like this, matching all files that contain `ListView` or `Dismissible`:
+
+````
+/Users/al/Projects/Flutter/PracticalFlutterBook/ch_05+06/flutter_book/lib/notes/NotesEntry.dart
+-----------------------------------------------------------------------------------------------
+  79:               child : ListView(
+
+/Users/al/Projects/Flutter/PracticalFlutterBook/ch_05+06/flutter_book/lib/notes/NotesList.dart
+----------------------------------------------------------------------------------------------
+ 102:       barrierDismissible : false,
+````
+
+
 
 
 ## Building the app (TODO: UPDATE THIS SECTION)
