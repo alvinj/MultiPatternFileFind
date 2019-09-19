@@ -1,5 +1,7 @@
 package filefind
 
+import util.control.Breaks._
+
 object StringUtils {
 
     /**
@@ -31,12 +33,31 @@ object StringUtils {
         ""
     }
 
-    def lineContainsStringOrPattern(line: String, patterns: Seq[String]): Boolean = {
+    def stringContainsAnyPattern(line: String, patterns: Seq[String]): Boolean = {
         for (p <- patterns) {
             if (line.contains(p)) return true
             else if (line.matches(p)) return true
         }
         false
+    }
+
+    /**
+     * Returns true if `s` contains *all* of the patterns.
+     */
+    def stringContainsAllPatterns(s: String, patterns: Seq[String]): Boolean = {
+        var foundAllPatternsSoFar = false
+        for (p <- patterns) {
+            breakable {
+                if (s.contains(p) || s.matches(p)) {
+                    foundAllPatternsSoFar = true
+                    break //go on to the next pattern
+                }
+                else {
+                    return false
+                }
+            }
+        }
+        foundAllPatternsSoFar
     }
 
     /**

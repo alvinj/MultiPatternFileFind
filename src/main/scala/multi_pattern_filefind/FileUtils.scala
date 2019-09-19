@@ -75,6 +75,13 @@ object FileUtils {
 
     private def inListOfLinesToPrint(lineNum: Int, list: Set[Int]) = list.contains(lineNum)
 
+    def fileToString(canonFilename: String): String = {
+        val bufferedSource = Source.fromFile(canonFilename)
+        val fileContents = bufferedSource.getLines.mkString
+        bufferedSource.close
+        fileContents
+    }
+
     /**
      * Find all of the line numbers in the file that match the pattern.
      */
@@ -84,7 +91,7 @@ object FileUtils {
         val bufferedSource = Source.fromFile(filename)
         for (line <- bufferedSource.getLines) {
             lineNum += 1
-            if (StringUtils.lineContainsStringOrPattern(line, patterns)) matchingLineNumbers += lineNum
+            if (StringUtils.stringContainsAnyPattern(line, patterns)) matchingLineNumbers += lineNum
         }
         bufferedSource.close
         matchingLineNumbers.toSeq

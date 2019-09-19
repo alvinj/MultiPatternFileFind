@@ -27,19 +27,26 @@ extends SimpleFileVisitor[Path] {
 
     // compares the glob filePattern against the file or directory name
     def find(file: Path): Unit = {
-        val name: Path = file.getFileName()
-        if (name != null && pathMatcher.matches(name)) {
+        val filename: Path = file.getFileName()
+        if (filename != null && pathMatcher.matches(filename)) {
             numMatches += 1
             val canonFilename = file.toAbsolutePath.toString
-            val matchingLineNumbers = findMatchingLineNumbers(
-                canonFilename, 
-                searchPatterns
-            )
-            if (findMatchingLineNumbers(canonFilename, searchPatterns).size > 0) {
-                printMatchingLines(
-                    canonFilename, matchingLineNumbers, searchPatterns, before, after
+
+            // search the file for the patterns
+            val fileContents = FileUtils.fileToString(canonFilename)
+            if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
+                // main use case -- the file must contain all patterns
+                val matchingLineNumbers = findMatchingLineNumbers(
+                    canonFilename, 
+                    searchPatterns
                 )
+                if (findMatchingLineNumbers(canonFilename, searchPatterns).size > 0) {
+                    printMatchingLines(
+                        canonFilename, matchingLineNumbers, searchPatterns, before, after
+                    )
+                }
             }
+
         }
     }
 
