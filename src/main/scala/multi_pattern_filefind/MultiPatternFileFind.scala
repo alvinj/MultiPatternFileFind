@@ -33,32 +33,35 @@ object MultiPatternFileFind extends App {
         head("mff", "0.1"),
         opt[String]('d', "dir")
             .required()
+            .valueName("[dirName]")
             .action((x, c) => c.copy(searchDir = x))
             .text("required; the directory to search"),
         opt[String]('f', "filename-pattern")
             .required()
-            .valueName("[filenamePattern] (like '*.java')")
+            .valueName("[filenamePattern]")
             .action((x, c) => c.copy(filenamePattern = x))
-            .text("required; the filenames to search"),
-        opt[String]('a', "p1")  //required
+            .text("required; the filenames to search, like '*.java'"),
+        opt[String]("p1")  //required
             .required()
-            .valueName("[searchPattern] (like 'StringBuilder' or '^void.*main.*')")
+            .valueName("[searchPattern]")
             .action((x, c) => c.copy(searchPattern1 = x))
-            .text("required; regex patterns must match the full line"),
-        opt[String]('b', "p2")  //required
+            .text("required; strings or patterns to search for; regexes must match the full line"),
+        opt[String]("p2")  //required
             .required()
-            .valueName("[searchPattern] (like 'StringBuilder' or '^void.*main.*')")
+            .valueName("[searchPattern]")
             .action((x, c) => c.copy(searchPattern2 = x))
-            .text("required; regex patterns must match the full line"),
-        opt[String]('c', "p3")
-            .valueName("[searchPattern] (like 'StringBuilder' or '^void.*main.*')")
+            .text("required; regex patterns are like 'StringBuilder' or '^void.*main.*'"),
+        opt[String]("p3")
+            .valueName("[searchPattern]")
             .action((x, c) => c.copy(searchPattern3 = x))
-            .text("regex patterns must match the full line"),
+            .text("optional"),
         opt[Int]('b', "before")
-            .valueName("[before] (the number of lines BEFORE the search pattern to print, like 1 or 2)")
+            .valueName("[before]")
+            .text("the number of lines BEFORE the search pattern to print, like 1 or 2")
             .action((x, c) => c.copy(before = x)),
         opt[Int]('a', "after")
-            .valueName("[after]   (the number of lines AFTER the search pattern to print, like 1 or 2)")
+            .valueName("[after]")
+            .text("the number of lines AFTER the search pattern to print, like 1 or 2")
             .action((x, c) => c.copy(after = x)),
         opt[Unit]('o', "or")
             .text("use ‘or’ approach to match *any* pattern instead of *all* patterns")

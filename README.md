@@ -9,20 +9,16 @@ Run `mff` by itself to see the usage information:
 ````
 $ mff
 
-mff 0.1
 Usage: mff [options]
 
-  -d, --dir <value>        required; the directory to search
-  -f, --filename-pattern [filenamePattern] (like '*.java')
-                           required; the filenames to search
-  -a, --p1 [searchPattern] (like 'StringBuilder' or '^void.*main.*')
-                           required; regex patterns must match the full line
-  -b, --p2 [searchPattern] (like 'StringBuilder' or '^void.*main.*')
-                           required; regex patterns must match the full line
-  -c, --p3 [searchPattern] (like 'StringBuilder' or '^void.*main.*')
-                           regex patterns must match the full line
-  -b, --before [before] (the number of lines BEFORE the search pattern to print, like 1 or 2)
-  -a, --after [after]   (the number of lines AFTER the search pattern to print, like 1 or 2)
+  -d, --dir [dirName]      required; the directory to search
+  -f, --filename-pattern [filenamePattern]
+                           required; the filenames to search, like '*.java'
+  --p1 [searchPattern]     required; strings or patterns to search for; regexes must match the full line
+  --p2 [searchPattern]     required; regex patterns are like 'StringBuilder' or '^void.*main.*'
+  --p3 [searchPattern]     optional
+  -b, --before [before]    the number of lines BEFORE the search pattern to print, like 1 or 2
+  -a, --after [after]      the number of lines AFTER the search pattern to print, like 1 or 2
   -o, --or                 use ‘or’ approach to match *any* pattern instead of *all* patterns
 ````
 
