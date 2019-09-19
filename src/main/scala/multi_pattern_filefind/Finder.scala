@@ -13,7 +13,8 @@ class Finder (
     filePattern: String, 
     searchPatterns: Seq[String],
     before: Int,
-    after: Int
+    after: Int,
+    matchAnyPattern: Boolean
 )
 extends SimpleFileVisitor[Path] {
 
@@ -34,21 +35,35 @@ extends SimpleFileVisitor[Path] {
 
             // search the file for the patterns
             val fileContents = FileUtils.fileToString(canonFilename)
-            if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
-                // main use case -- the file must contain all patterns
-                val matchingLineNumbers = findMatchingLineNumbers(
-                    canonFilename, 
-                    searchPatterns
-                )
-                if (findMatchingLineNumbers(canonFilename, searchPatterns).size > 0) {
-                    printMatchingLines(
-                        canonFilename, matchingLineNumbers, searchPatterns, before, after
-                    )
+            if (matchAnyPattern) {
+                doTheWork(canonFilename, searchPatterns, before, after)
+            } else {
+                // the main use case -- the file must contain all patterns
+                if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
+                    doTheWork(canonFilename, searchPatterns, before, after)
                 }
             }
-
         }
     }
+
+    private def doTheWork(
+        _canonFilename: String,
+        _searchPatterns: Seq[String],
+        _before: Int,
+        _after: Int
+    ) = {
+        val matchingLineNumbers = findMatchingLineNumbers(
+            _canonFilename, 
+            _searchPatterns
+        )
+        if (findMatchingLineNumbers(_canonFilename, _searchPatterns).size > 0) {
+            printMatchingLines(
+                _canonFilename, matchingLineNumbers, _searchPatterns, _before, _after
+            )
+        }
+    }
+
+
 
     def done() = {
         println(s"Searched $numMatches $filePattern files.\n")

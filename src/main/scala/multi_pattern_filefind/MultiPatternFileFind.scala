@@ -19,7 +19,10 @@ object MultiPatternFileFind extends App {
         searchPattern3: String = "",    //3rd pattern to look for inside files
         filenamePattern: String = "",   //filename pattern to search for
         before: Int = 0,                //lines to print before each match
-        after: Int = 0                  //lines to print after each match
+        after: Int = 0,                 //lines to print after each match
+        orBehavior: Boolean = false     //search using "or" rather than the default "and", i.e.,
+                                        //this says, "match any pattern" as opposed to the default
+                                        //"match all patterns"
     )
 
     val builder = OParser.builder[Config]
@@ -56,7 +59,10 @@ object MultiPatternFileFind extends App {
             .action((x, c) => c.copy(before = x)),
         opt[Int]('a', "after")
             .valueName("[after]   (the number of lines AFTER the search pattern to print, like 1 or 2)")
-            .action((x, c) => c.copy(after = x))
+            .action((x, c) => c.copy(after = x)),
+        opt[Unit]('o', "or")
+            .text("use ‘or’ approach to match *any* pattern instead of *all* patterns")
+            .action((_, c) => c.copy(orBehavior = true))
       )
     }
 
@@ -80,7 +86,8 @@ object MultiPatternFileFind extends App {
             config.filenamePattern, 
             searchPatterns,
             config.before,
-            config.after
+            config.after,
+            config.orBehavior
         )
         Files.walkFileTree(
             Paths.get(config.searchDir), 
