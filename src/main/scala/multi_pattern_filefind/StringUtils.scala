@@ -61,6 +61,26 @@ object StringUtils {
     }
 
     /**
+     * Returns true if `lines` contains *all* of the patterns.
+     */
+    def stringContainsAllPatterns(lines: Seq[String], patterns: Seq[String]): Boolean = {
+        var foundAllPatternsSoFar = false
+        for (p <- patterns) {
+            breakable {
+                for (line <- lines) {
+                    if (line.contains(p) || line.matches(p)) {
+                        foundAllPatternsSoFar = true
+                        break //go on to the next pattern
+                    }
+                }
+                // made it through all lines and didn’t find a match
+                return false
+            }
+        }
+        foundAllPatternsSoFar
+    }
+
+    /**
      * Create an “underline” string that’s the same length as the input string.
      * {{{
      *     val s = "foobar"

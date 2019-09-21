@@ -6,13 +6,18 @@ import scala.collection.mutable.ArrayBuffer
 
 case class LineRange(firstLine: Int, lastLine: Int)
 
+/**
+ * TODO: after the latest refactoring, many of these functions are no
+ * ----  longer “file utilities.” Move them to another location.
+ */
 object FileUtils {
 
     /**
      * Only call this method when you know the `filename` contains matches.
      */
     def printMatchingLines(
-        filename: String, 
+        filename: String,
+        lines: Seq[String],
         lineNumsWherePatternFound: Seq[Int],
         searchPatterns: Seq[String],
         linesBefore: Int,
@@ -21,15 +26,13 @@ object FileUtils {
 
         printFilename(filename)
 
-        //val allLinesToPrint = lineNumsWherePatternFound.toSet
         val allLinesToPrint = createListOfLinesToPrint(
             lineNumsWherePatternFound, linesBefore, linesAfter
         )
 
         var inARange = false
         var lineNum = 0
-        val bufferedSource = Source.fromFile(filename)
-        for (line <- bufferedSource.getLines) {
+        for (line <- lines) {
             lineNum += 1
             if (inListOfLinesToPrint(lineNum, allLinesToPrint)) {
                 inARange = true
@@ -44,7 +47,6 @@ object FileUtils {
                 println("")
             }
         }
-        bufferedSource.close
     }
 
     private def printFilename(filename: String): Unit = {
@@ -75,25 +77,30 @@ object FileUtils {
 
     private def inListOfLinesToPrint(lineNum: Int, list: Set[Int]) = list.contains(lineNum)
 
-    def fileToString(canonFilename: String): String = {
+    def readFileToString(canonFilename: String): String = {
         val bufferedSource = Source.fromFile(canonFilename)
         val fileContents = bufferedSource.getLines.mkString
         bufferedSource.close
         fileContents
     }
 
+    def readFileToSeq(canonFilename: String): Seq[String] = {
+        val bufferedSource = Source.fromFile(canonFilename)
+        val fileContents = bufferedSource.getLines.toList
+        bufferedSource.close
+        fileContents
+    }
+
     /**
-     * Find all of the line numbers in the file that match the pattern.
+     * Find all of the line numbers in the Seq[String] that match the pattern.
      */
-    def findMatchingLineNumbers(filename: String, patterns: Seq[String]): Seq[Int] = {
+    def findMatchingLineNumbers(lines: Seq[String], patterns: Seq[String]): Seq[Int] = {
         val matchingLineNumbers = ArrayBuffer[Int]()
         var lineNum = 0
-        val bufferedSource = Source.fromFile(filename)
-        for (line <- bufferedSource.getLines) {
+        for (line <- lines) {
             lineNum += 1
             if (StringUtils.stringContainsAnyPattern(line, patterns)) matchingLineNumbers += lineNum
         }
-        bufferedSource.close
         matchingLineNumbers.toSeq
     }
 

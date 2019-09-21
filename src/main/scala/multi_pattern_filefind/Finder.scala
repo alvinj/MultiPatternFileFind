@@ -19,7 +19,8 @@ class Finder (
 extends SimpleFileVisitor[Path] {
 
     var pathMatcher: PathMatcher = null
-    var numMatches = 0
+    var numFilenameMatches = 0
+    var numPatternMatches = 0
 
     // note: "glob:" is part of the syntax
     // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
@@ -30,44 +31,44 @@ extends SimpleFileVisitor[Path] {
     def find(file: Path): Unit = {
         val filename: Path = file.getFileName()
         if (filename != null && pathMatcher.matches(filename)) {
-            numMatches += 1
+            numFilenameMatches += 1
             val canonFilename = file.toAbsolutePath.toString
 
             // search the file for the patterns
-            val fileContents = FileUtils.fileToString(canonFilename)
+            val fileContents = FileUtils.readFileToSeq(canonFilename)
             if (matchAnyPattern) {
                 // the optional use case -- the file can contain any pattern
-                doTheWork(canonFilename, searchPatterns, before, after)
+                printTheResults(canonFilename, fileContents, searchPatterns, before, after)
             } else {
                 // the main use case -- the file must contain all patterns
                 if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
-                    doTheWork(canonFilename, searchPatterns, before, after)
+                    printTheResults(canonFilename, fileContents, searchPatterns, before, after)
                 }
             }
         }
     }
 
-    private def doTheWork(
-        _canonFilename: String,
+    private def printTheResults(
+        _filename: String,
+        _lines: Seq[String],
         _searchPatterns: Seq[String],
         _before: Int,
         _after: Int
     ) = {
         val matchingLineNumbers = findMatchingLineNumbers(
-            _canonFilename, 
+            _lines,
             _searchPatterns
         )
-        if (findMatchingLineNumbers(_canonFilename, _searchPatterns).size > 0) {
+        if (findMatchingLineNumbers(_lines, _searchPatterns).size > 0) {
+            numPatternMatches += 1
             printMatchingLines(
-                _canonFilename, matchingLineNumbers, _searchPatterns, _before, _after
+                _filename, _lines, matchingLineNumbers, _searchPatterns, _before, _after
             )
         }
     }
 
-
-
     def done() = {
-        println(s"Searched $numMatches $filePattern files.\n")
+        println(s"Searched $numFilenameMatches $filePattern files, found $numPatternMatches matching files.\n")
     }
     
     // invoke the filePattern matching method on each file
