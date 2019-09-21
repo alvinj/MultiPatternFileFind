@@ -19,13 +19,25 @@ object FinderHelper {
         lines: Seq[String],
         searchPatterns: Seq[String],
         linesBefore: Int,
-        linesAfter: Int
+        linesAfter: Int,
+        ignoreCase: Boolean
     ): Unit = {
+        //TODO why do i do this twice???
+        // val matchingLineNumbers = findMatchingLineNumbers(
+        //     lines,
+        //     searchPatterns
+        // )
+        // if (findMatchingLineNumbers(lines, searchPatterns).size > 0) {
+        //     printMatchingLines(
+        //         filename, lines, matchingLineNumbers, searchPatterns, linesBefore, linesAfter
+        //     )
+        // }
         val matchingLineNumbers = findMatchingLineNumbers(
             lines,
-            searchPatterns
+            searchPatterns,
+            ignoreCase
         )
-        if (findMatchingLineNumbers(lines, searchPatterns).size > 0) {
+        if (matchingLineNumbers.size > 0) {
             printMatchingLines(
                 filename, lines, matchingLineNumbers, searchPatterns, linesBefore, linesAfter
             )
@@ -35,12 +47,17 @@ object FinderHelper {
     /**
      * Find all of the line numbers in the Seq[String] that match the pattern.
      */
-    def findMatchingLineNumbers(lines: Seq[String], patterns: Seq[String]): Seq[Int] = {
+    def findMatchingLineNumbers(
+        lines: Seq[String], 
+        patterns: Seq[String],
+        ignoreCase: Boolean
+    ): Seq[Int] = {
+        System.err.println("ENTERED FIND_MATCHING_LINE_NUMBERS")
         val matchingLineNumbers = ArrayBuffer[Int]()
         var lineNum = 0
         for (line <- lines) {
             lineNum += 1
-            if (StringUtils.stringContainsAnyPattern(line, patterns)) matchingLineNumbers += lineNum
+            if (stringContainsAnyPattern(line, patterns, ignoreCase)) matchingLineNumbers += lineNum
         }
         matchingLineNumbers.toSeq
     }

@@ -15,7 +15,8 @@ class Finder (
     searchPatterns: Seq[String],
     before: Int,
     after: Int,
-    matchAnyPattern: Boolean
+    matchAnyPattern: Boolean,
+    ignoreCase: Boolean
 )
 extends SimpleFileVisitor[Path] {
 
@@ -32,6 +33,8 @@ extends SimpleFileVisitor[Path] {
     def find(file: Path): Unit = {
         val filename: Path = file.getFileName()
         if (filename != null && pathMatcher.matches(filename)) {
+
+            // we have a matching filename
             numFilenameMatches += 1
             val canonFilename = file.toAbsolutePath.toString
 
@@ -40,12 +43,12 @@ extends SimpleFileVisitor[Path] {
             if (matchAnyPattern) {
                 numPatternMatches += 1
                 // the optional use case -- the file can contain any pattern
-                printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after)
+                printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after, ignoreCase)
             } else {
                 // the main use case -- the file must contain all patterns
-                if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
+                if (stringContainsAllPatterns(fileContents, searchPatterns, ignoreCase)) {
                     numPatternMatches += 1
-                    printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after)
+                    printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after, ignoreCase)
                 }
             }
         }

@@ -11,16 +11,39 @@ $ ffx
 
 Usage: ffx [options]
 
-  -d, --dir [dirName]      required; the directory to search
-  -f, --filename-pattern [filenamePattern]
+  -d, --d [dirName]        required; the directory to search
+  -f, --f [filenamePattern]
                            required; the filenames to search, like '*.java'
   --p1 [searchPattern]     required; strings or patterns to search for; regexes must match the full line
   --p2 [searchPattern]     required; regex patterns are like 'StringBuilder' or '^void.*main.*'
   --p3 [searchPattern]     optional
+  --p4 [searchPattern]     optional
   -b, --before [before]    the number of lines BEFORE the search pattern to print, like 1 or 2
   -a, --after [after]      the number of lines AFTER the search pattern to print, like 1 or 2
   -o, --or                 use ‘or’ approach to match *any* pattern instead of *all* patterns
+  -i, --i                  ignore case when doing the matching (probably doesn’t work with regex patterns atm)
+
+Usage Examples:
+---------------
+
+Search for two patterns:
+    ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile
+
+The same, but also print one line before and one line after each match:
+    ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile -b 1 -a 2
+
+Ignore case when searching:
+    ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 listtile -i
+
+Use the “or” option, searching for files containing either pattern:
+    ffx -d /Users/al/Projects/Scala -f "*.scala" --p1 ArrayBuffer --p2 ArrayBuilder -o
+
+Search for three patterns:
+    ffx -d ~/Scala -f "*.scala" --p1 foo --p2 bar --p3 baz
 ````
+
+
+### Example 1
 
 Here’s an example command:
 
@@ -59,6 +82,8 @@ Sample output looks like this:
 
 When that output is shown in a terminal window, all occurrences of `ListView` and `ListTile` are underlined.
 
+### Example 2
+
 Here’s a command using the “or” option, which means, “Match *any* pattern, not *all* patterns (which is the default)”:
 
 ````
@@ -78,6 +103,7 @@ Its “or” output looks like this, matching all files that contain `ListView` 
 ````
 
 
+
 ## Building the app
 
 I initially build the app with [sbt-assembly](https://github.com/sbt/sbt-assembly), then create an executable with GraalVM. The steps are:
@@ -94,16 +120,9 @@ After that, copy the `ffx` executable to your *~/bin* directory, or somewhere si
 
 ## TO-DO
 
-- The code is inefficient in that it opens and searches files multiple times.
-  It would be better to open the file once, convert it to a `Seq[String]`, then
-  search that `Seq` instead of the file.
-- Add “Help” text, including usage examples
+- I need to test REGEX expressions, I haven’t put much work into them
 
 
-
-## More information
-
-- TODO
 
 Alvin Alexander  
 https://alvinalexander.com

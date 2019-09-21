@@ -33,10 +33,17 @@ object StringUtils {
         ""
     }
 
-    def stringContainsAnyPattern(line: String, patterns: Seq[String]): Boolean = {
+    //TODO share the string/pattern-matching code in stringContainsAnyPattern && stringContainsAllPatterns
+    def stringContainsAnyPattern(
+        line: String, 
+        patterns: Seq[String],
+        ignoreCase: Boolean = false
+    ): Boolean = {
         for (p <- patterns) {
             if (line.contains(p)) return true
             else if (line.matches(p)) return true
+            else if (ignoreCase && line.toUpperCase.contains(p.toUpperCase)) return true
+            //else if (ignoreCase && line.matches(s"(?i:${p})")) return true
         }
         false
     }
@@ -63,12 +70,16 @@ object StringUtils {
     /**
      * Returns true if `lines` contains *all* of the patterns.
      */
-    def stringContainsAllPatterns(lines: Seq[String], patterns: Seq[String]): Boolean = {
+    def stringContainsAllPatterns(
+        lines: Seq[String], 
+        patterns: Seq[String],
+        ignoreCase: Boolean
+    ): Boolean = {
         var foundAllPatternsSoFar = false
         for (p <- patterns) {
             breakable {
                 for (line <- lines) {
-                    if (line.contains(p) || line.matches(p)) {
+                    if (line.contains(p) || line.matches(p) || (ignoreCase && line.toUpperCase.contains(p.toUpperCase))) {
                         foundAllPatternsSoFar = true
                         break //go on to the next pattern
                     }

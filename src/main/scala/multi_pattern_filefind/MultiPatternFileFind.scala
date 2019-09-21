@@ -11,6 +11,23 @@ import scala.collection.mutable.ArrayBuffer
 
 object MultiPatternFileFind extends App {
 
+    val helpText = """
+        |Usage Examples:
+        |---------------
+        |
+        |Search for two patterns:
+        |    ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile
+        |
+        |The same, but also print one line before and one line after each match:
+        |    ffx -d /Users/al/Projects/Flutter -f "*.dart" --p1 ListView --p2 ListTile -b 1 -a 2
+        |
+        |Use the “or” option, searching for files containing either pattern:
+        |    ffx -d /Users/al/Projects/Scala -f "*.scala" --p1 ArrayBuffer --p2 ArrayBuilder -o
+        |
+        |Search for three patterns:
+        |    ffx -d ~/Scala -f "*.scala" --p1 foo --p2 bar --p3 baz
+    """.stripMargin
+
     // use the “scopt” library to get the command-line options
     case class Config(
         searchDir: String = "",         //directory to search
@@ -21,14 +38,16 @@ object MultiPatternFileFind extends App {
         filenamePattern: String = "",   //filename pattern to search for
         before: Int = 0,                //lines to print before each match
         after: Int = 0,                 //lines to print after each match
-        orBehavior: Boolean = false     //search using "or" rather than the default "and", i.e.,
+        orBehavior: Boolean = false,    //search using "or" rather than the default "and", i.e.,
                                         //this says, "match any pattern" as opposed to the default
                                         //"match all patterns"
+        ignoreCase: Boolean = false     //ignore case when looking for strings
     )
 
     val builder = OParser.builder[Config]
     val parser1: OParser[Unit,Config] = {
       import builder._
+      //TODO the “help” option isn’t working as desired, so i removed it
       OParser.sequence(
         programName("ffx"),
         head("ffx", "0.1"),
@@ -70,7 +89,11 @@ object MultiPatternFileFind extends App {
             .action((x, c) => c.copy(after = x)),
         opt[Unit]('o', "or")
             .text("use ‘or’ approach to match *any* pattern instead of *all* patterns")
-            .action((_, c) => c.copy(orBehavior = true))
+            .action((_, c) => c.copy(orBehavior = true)),
+        opt[Unit]('i', "i")
+            .text("ignore case when doing the matching (probably doesn’t work with regex patterns atm)")
+            .action((_, c) => c.copy(ignoreCase = true)),
+        note(helpText)
       )
     }
 
@@ -96,7 +119,8 @@ object MultiPatternFileFind extends App {
             searchPatterns,
             config.before,
             config.after,
-            config.orBehavior
+            config.orBehavior,
+            config.ignoreCase
         )
         Files.walkFileTree(
             Paths.get(config.searchDir), 
@@ -104,7 +128,6 @@ object MultiPatternFileFind extends App {
         )
         finder.printSummaryLine()    
     }
-
 
 }
 
