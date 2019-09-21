@@ -43,29 +43,29 @@ object StringUtils {
             if (line.contains(p)) return true
             else if (line.matches(p)) return true
             else if (ignoreCase && line.toUpperCase.contains(p.toUpperCase)) return true
-            //else if (ignoreCase && line.matches(s"(?i:${p})")) return true
+            else if (ignoreCase && line.matches(s"(?i:${p})")) return true
         }
         false
     }
 
-    /**
-     * Returns true if `s` contains *all* of the patterns.
-     */
-    def stringContainsAllPatterns(s: String, patterns: Seq[String]): Boolean = {
-        var foundAllPatternsSoFar = false
-        for (p <- patterns) {
-            breakable {
-                if (s.contains(p) || s.matches(p)) {
-                    foundAllPatternsSoFar = true
-                    break //go on to the next pattern
-                }
-                else {
-                    return false
-                }
-            }
-        }
-        foundAllPatternsSoFar
-    }
+    // /**
+    //  * Returns true if `s` contains *all* of the patterns.
+    //  */
+    // def stringContainsAllPatterns(s: String, patterns: Seq[String]): Boolean = {
+    //     var foundAllPatternsSoFar = false
+    //     for (p <- patterns) {
+    //         breakable {
+    //             if (s.contains(p) || s.matches(p)) {
+    //                 foundAllPatternsSoFar = true
+    //                 break //go on to the next pattern
+    //             }
+    //             else {
+    //                 return false
+    //             }
+    //         }
+    //     }
+    //     foundAllPatternsSoFar
+    // }
 
     /**
      * Returns true if `lines` contains *all* of the patterns.
@@ -79,7 +79,11 @@ object StringUtils {
         for (p <- patterns) {
             breakable {
                 for (line <- lines) {
-                    if (line.contains(p) || line.matches(p) || (ignoreCase && line.toUpperCase.contains(p.toUpperCase))) {
+                    if (line.contains(p) || 
+                        line.matches(p) || 
+                        (ignoreCase && line.toUpperCase.contains(p.toUpperCase)) ||
+                        ignoreCase && line.matches(s"(?i:${p})")
+                    ) {
                         foundAllPatternsSoFar = true
                         break //go on to the next pattern
                     }
