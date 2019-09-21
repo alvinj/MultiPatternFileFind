@@ -22,16 +22,6 @@ object FinderHelper {
         linesAfter: Int,
         ignoreCase: Boolean
     ): Unit = {
-        //TODO why do i do this twice???
-        // val matchingLineNumbers = findMatchingLineNumbers(
-        //     lines,
-        //     searchPatterns
-        // )
-        // if (findMatchingLineNumbers(lines, searchPatterns).size > 0) {
-        //     printMatchingLines(
-        //         filename, lines, matchingLineNumbers, searchPatterns, linesBefore, linesAfter
-        //     )
-        // }
         val matchingLineNumbers = findMatchingLineNumbers(
             lines,
             searchPatterns,
@@ -52,7 +42,6 @@ object FinderHelper {
         patterns: Seq[String],
         ignoreCase: Boolean
     ): Seq[Int] = {
-        System.err.println("ENTERED FIND_MATCHING_LINE_NUMBERS")
         val matchingLineNumbers = ArrayBuffer[Int]()
         var lineNum = 0
         for (line <- lines) {
