@@ -1,4 +1,4 @@
-package filefind
+package multi_pattern_filefind
 
 import java.io._
 import java.nio.file._
@@ -8,6 +8,7 @@ import java.nio.file.FileVisitOption._
 import scala.io.Source
 import StringUtils._
 import FileUtils._
+import FinderHelper._
 
 class Finder (
     filePattern: String, 
@@ -37,40 +38,19 @@ extends SimpleFileVisitor[Path] {
             // search the file for the patterns
             val fileContents = FileUtils.readFileToSeq(canonFilename)
             if (matchAnyPattern) {
+                numPatternMatches += 1
                 // the optional use case -- the file can contain any pattern
-                printTheResults(canonFilename, fileContents, searchPatterns, before, after)
+                printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after)
             } else {
                 // the main use case -- the file must contain all patterns
                 if (StringUtils.stringContainsAllPatterns(fileContents, searchPatterns)) {
-                    printTheResults(canonFilename, fileContents, searchPatterns, before, after)
+                    numPatternMatches += 1
+                    printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after)
                 }
             }
         }
     }
 
-    private def printTheResults(
-        _filename: String,
-        _lines: Seq[String],
-        _searchPatterns: Seq[String],
-        _before: Int,
-        _after: Int
-    ) = {
-        val matchingLineNumbers = findMatchingLineNumbers(
-            _lines,
-            _searchPatterns
-        )
-        if (findMatchingLineNumbers(_lines, _searchPatterns).size > 0) {
-            numPatternMatches += 1
-            printMatchingLines(
-                _filename, _lines, matchingLineNumbers, _searchPatterns, _before, _after
-            )
-        }
-    }
-
-    def done() = {
-        println(s"Searched $numFilenameMatches $filePattern files, found $numPatternMatches matching files.\n")
-    }
-    
     // invoke the filePattern matching method on each file
     override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
         find(file)
@@ -88,5 +68,10 @@ extends SimpleFileVisitor[Path] {
         return CONTINUE
     }
     
+    def printSummaryLine() = FinderHelper.printSummaryLine(
+        filePattern,
+        numFilenameMatches,
+        numPatternMatches
+    )
 
 }

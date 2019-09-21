@@ -1,4 +1,4 @@
-package filefind
+package multi_pattern_filefind
 
 import StringUtils._
 import scala.io.Source

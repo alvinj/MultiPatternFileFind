@@ -1,4 +1,4 @@
-package filefind
+package multi_pattern_filefind
 
 import java.io._
 import java.nio.file._
@@ -102,7 +102,7 @@ object MultiPatternFileFind extends App {
             Paths.get(config.searchDir), 
             finder
         )
-        finder.done()    
+        finder.printSummaryLine()    
     }
 
 
