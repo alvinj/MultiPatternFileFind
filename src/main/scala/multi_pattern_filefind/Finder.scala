@@ -34,19 +34,21 @@ extends SimpleFileVisitor[Path] {
         val filename: Path = file.getFileName()
         if (filename != null && pathMatcher.matches(filename)) {
 
-            // we have a matching filename
+            // the current filename matches the user’s filename pattern
             numFilenameMatches += 1
             val canonFilename = file.toAbsolutePath.toString
 
-            // search the file for the patterns
-            val fileContents = FileUtils.readFileToSeq(canonFilename)
+            // now search the current file for the patterns
+            val fileContents: Seq[String] = FileUtils.readFileToSeq(canonFilename)
             if (matchAnyPattern) {
-                numPatternMatches += 1
-                // the optional use case -- the file can contain any pattern
-                printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after, ignoreCase)
+                // match *any* pattern (the -o option)
+                if (seqOfStringContainsAnyPattern(fileContents, searchPatterns, ignoreCase)) {
+                    numPatternMatches += 1
+                    printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after, ignoreCase)
+                }
             } else {
-                // the main use case -- the file must contain all patterns
-                if (stringContainsAllPatterns(fileContents, searchPatterns, ignoreCase)) {
+                // match *all* patterns (the -o option)
+                if (seqOfStringContainsAllPatterns(fileContents, searchPatterns, ignoreCase)) {
                     numPatternMatches += 1
                     printMatchingLinesForFile(canonFilename, fileContents, searchPatterns, before, after, ignoreCase)
                 }

@@ -122,6 +122,8 @@ See the TODO note below, that `native-image` does *not* create a complete standa
 
 - 0.1, the initial release
 - 0.2, fixed an issue where FileUtils::readFileToSeq was throwing exceptions
+- 0.3, fixed an issue where the OR pattern matching (`-o`) showed that all files with
+  the given filename pattern were matches (which was incorrect)
 
 
 ## TO-DO

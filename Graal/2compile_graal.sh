@@ -1,7 +1,7 @@
 
 # this script assumes that this file was already created
 # with `sbt package` or `sbt assembly`
-JAR_FILE=MultiPatternFileFind-assembly-0.2.jar
+JAR_FILE=MultiPatternFileFind-assembly-0.3.jar
 COMMAND_NAME=ffx
 
 echo "copying JAR file to current dir ..."

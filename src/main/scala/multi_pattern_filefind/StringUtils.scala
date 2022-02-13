@@ -58,9 +58,28 @@ object StringUtils {
     }
 
     /**
+     * Returns true if `lines` contains *any* of the patterns.
+     */
+    def seqOfStringContainsAnyPattern(
+        lines: Seq[String], 
+        patterns: Seq[String],
+        ignoreCase: Boolean
+    ): Boolean = {
+        // as soon as you find that any pattern matches a line, return true
+        for (p <- patterns) {
+            for (line <- lines) {
+                if (lineMatchesPattern(line, p, ignoreCase)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    /**
      * Returns true if `lines` contains *all* of the patterns.
      */
-    def stringContainsAllPatterns(
+    def seqOfStringContainsAllPatterns(
         lines: Seq[String], 
         patterns: Seq[String],
         ignoreCase: Boolean
