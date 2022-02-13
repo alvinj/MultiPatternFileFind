@@ -103,25 +103,33 @@ Its “or” output looks like this, matching all files that contain `ListView` 
 ````
 
 
-
 ## Building the app
 
 I initially build the app with [sbt-assembly](https://github.com/sbt/sbt-assembly), then create an executable with GraalVM. The steps are:
 
 - Run `sbt assembly`, or run `assembly` from the SBT prompt
-- That creates a JAR file named *target/scala-2.12/MultiPatternFileFind-assembly-0.1.jar*
+- That creates a JAR file named *target/scala-2.12/MultiPatternFileFind-assembly-0.2.jar*
 - `cd` into the *Graal* directory
 - Source the first file, i.e., `. 1setup_graal` (you’ll need to change that configuration for your system)
 - Then run `2compile_graal.sh` to create the `ffx` executable with GraalVM
 
 After that, copy the `ffx` executable to your *~/bin* directory, or somewhere similar.
 
+See the TODO note below, that `native-image` does *not* create a complete standalone image.
+
+
+## Version history
+
+- 0.1, the initial release
+- 0.2, fixed an issue where FileUtils::readFileToSeq was throwing exceptions
 
 
 ## TO-DO
 
-- I need to test REGEX expressions, I haven’t put much work into them
-
+- Feb. 12, 2022: GraalVM native-image: Warning: Image 'ffx' is a fallback image that requires a JDK for 
+  execution (use --no-fallback to suppress fallback image generation and to print more detailed information 
+  why a fallback image was necessary).
+- I need to test REGEX expressions; I haven’t put much work into them.
 
 
 Alvin Alexander  

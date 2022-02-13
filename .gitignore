@@ -1,3 +1,8 @@
+.bsp/
+.vscode/
+project/metals.sbt
+project/project/
+
 Graal/ffx
 Graal/*.jar
 bin/
